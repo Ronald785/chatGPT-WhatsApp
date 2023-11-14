@@ -1,0 +1,19 @@
+{
+    "name": "chatgpt-whatsapp",
+    "version": "1.0.0",
+    "description": "This project leverages JavaScript, MongoDB, LangChain, and OpenAI to create a powerful application that integrates ChatGPT with the WhatsApp.",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "langchain": "^0.0.187",
+        "mongoose": "^8.0.0",
+        "qrcode-terminal": "^0.12.0",
+        "whatsapp-web.js": "^1.23.0",
+        "wwebjs-mongo": "^1.1.0"
+    }
+}
