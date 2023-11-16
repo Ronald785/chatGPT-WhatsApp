@@ -1,8 +1,11 @@
 import "dotenv/config";
 import pkg from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
+import { MongoStore } from "wwebjs-mongo";
+import mongoose from "mongoose";
+import __dirname from "./utils/dirname.js";
 
-const { Client } = pkg;
+const { Client, RemoteAuth } = pkg;
 
 class Session {
     clientData = null;
@@ -13,6 +16,15 @@ class Session {
     }
 
     async initialize() {
+        await mongoose.connect(process.env.MONGO_URI + process.env.MONGO_DB);
+
+        const authStrategy = new RemoteAuth({
+            clientId: this.myNumber,
+            dataPath: __dirname + `/sessions/${this.myNumber}`,
+            store: new MongoStore({ mongoose: mongoose }),
+            backupSyncIntervalMs: 60000,
+        });
+
         const puppeteer = {
             args: [
                 "--no-sandbox",
@@ -30,6 +42,7 @@ class Session {
 
         this.clientData = new Client({
             qrMaxRetries: 5,
+            authStrategy,
             puppeteer,
         });
 
@@ -41,6 +54,10 @@ class Session {
 
         this.clientData.on("ready", () => {
             console.log("Client is ready!");
+        });
+
+        this.clientData.on("remote_session_saved", () => {
+            console.log("remote_session_saved!");
         });
 
         this.clientData.on("message", async (message) => {
