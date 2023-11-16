@@ -11,4 +11,3 @@ yarn.lock
 # Diretórios
 .wwebjs_cache
 sessions/
-examples/
