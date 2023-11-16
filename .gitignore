@@ -7,3 +7,8 @@ yarn.lock
 
 # Ambiente
 .env
+
+# Diretórios
+.wwebjs_cache
+sessions/
+examples/
