@@ -19,10 +19,13 @@ Bem-vindo ao repositório de Integração ChatGPT-WhatsApp! Este projeto utiliza
 #Copie o repositório
 $ git clone https://github.com/Ronald785/chatGPT-WhatsApp
 
+#Acesse o diretório do projeto
 $ cd chatGPT-WhatsApp
 
 #Instale as dependências
 $ npm install
+
+#Acesse o mongoDB Atlas e crie um database "whatsapp-ia" com 2 collections "chat_histoy" e "contact"
 
 #Substitua as variáveis do arquivo .env
 ```
