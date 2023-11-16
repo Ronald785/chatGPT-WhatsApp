@@ -1,5 +1,5 @@
-import chat from "../langchain/chat.js";
-import db from "../db/index.js";
+import chat from "../app/langchain/chat.js";
+import db from "../app/db/index.js";
 
 async function test(id) {
     db.client.connect();

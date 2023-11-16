@@ -3,10 +3,10 @@ import pkg from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import { MongoStore } from "wwebjs-mongo";
 import mongoose from "mongoose";
-import __dirname from "./utils/dirname.js";
-import chat from "./langchain/chat.js";
-import db from "./db/index.js";
-import operations from "./db/operations.js";
+import __dirname from "../utils/dirname.js";
+import chat from "../langchain/chat.js";
+import db from "../db/index.js";
+import operations from "../db/operations.js";
 
 const { Client, RemoteAuth } = pkg;
 
