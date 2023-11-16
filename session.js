@@ -4,6 +4,9 @@ import qrcode from "qrcode-terminal";
 import { MongoStore } from "wwebjs-mongo";
 import mongoose from "mongoose";
 import __dirname from "./utils/dirname.js";
+import chat from "./langchain/chat.js";
+import db from "./db/index.js";
+import operations from "./db/operations.js";
 
 const { Client, RemoteAuth } = pkg;
 
@@ -61,8 +64,6 @@ class Session {
         });
 
         this.clientData.on("message", async (message) => {
-            console.log(message.body);
-
             const contact = await message.getContact();
             const contactChat = await message.getChat();
 
@@ -74,7 +75,17 @@ class Session {
 
             contactChat.sendStateTyping();
 
-            this.sendPrivateMessage(contact.number, "Reply: \n" + message.body);
+            const contactDoc = await operations.getOrCreateContact(this.myNumber, contact.number);
+
+            await db.client.connect();
+
+            const chatIA = await chat(contactDoc._id);
+
+            const responseChat = await chatIA.call({ question: handledMessage.text });
+
+            await db.client.close();
+
+            this.sendPrivateMessage(contact.number, responseChat.response);
         });
     }
 
