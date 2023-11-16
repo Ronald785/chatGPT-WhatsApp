@@ -67,7 +67,11 @@ class Session {
             const contact = await message.getContact();
             const contactChat = await message.getChat();
 
-            if (!this.allowedNumbers.includes(contact.number)) return;
+            if (!this.allowedNumbers.includes(contact.number)) {
+                contactChat.sendStateTyping();
+                this.sendPrivateMessage(contact.number, "Você não tem permissão para usufruir da IA");
+                return;
+            }
 
             const handledMessage = await handleMessage(message);
 
