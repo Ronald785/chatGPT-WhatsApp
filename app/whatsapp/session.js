@@ -7,6 +7,7 @@ import __dirname from "../utils/dirname.js";
 import chat from "../langchain/chat.js";
 import db from "../db/index.js";
 import operations from "../db/operations.js";
+import memory from "../langchain/memory.js";
 
 const { Client, RemoteAuth } = pkg;
 
@@ -82,14 +83,26 @@ class Session {
             const contactDoc = await operations.getOrCreateContact(this.myNumber, contact.number);
 
             await db.client.connect();
+            const chatAI = await chat(contactDoc._id);
 
-            const chatIA = await chat(contactDoc._id);
-
-            const responseChat = await chatIA.call({ question: handledMessage.text });
-
+            try {
+                const responseAI = await chatAI.call({ question: handledMessage.text });
+                this.sendPrivateMessage(contact.number, responseAI.response);
+            } catch (error) {
+                if (error.code == "context_length_exceeded") {
+                    const memoryChat = memory(contactDoc._id);
+                    await memoryChat.chatHistory.clear();
+                    this.sendPrivateMessage(
+                        contactDoc.number,
+                        "O limite do histórico foi excedido, por conta disso, o histórico de conversa com o bot foi limpo.",
+                    );
+                    const responseAI = await chatAI.call({ question: handledMessage.text });
+                    this.sendPrivateMessage(contactDoc.number, responseAI.response);
+                } else {
+                    console.log(error.code);
+                }
+            }
             await db.client.close();
-
-            this.sendPrivateMessage(contact.number, responseChat.response);
         });
     }
 
